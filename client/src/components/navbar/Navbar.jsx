@@ -1,9 +1,8 @@
-import React, {useState} from "react";
+import React from "react";
 import Logo from "../../assets/logo.png";
 import { NavLink } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../reducers/userReducer";
-import {setTheme} from "../../reducers/themeReducer";
 
 function Navbar() {
 	const isAuth = useSelector((state) => state.user.isAuth);
@@ -36,6 +35,16 @@ function Navbar() {
 						</NavLink>
 					)}
 					{isAuth && (
+						<div className="form-control">
+							<div className="input-group">
+								<input type="text" placeholder="Search…" className="input input-bordered" />
+								<button className="btn btn-square">
+									<svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+								</button>
+							</div>
+						</div>
+					)}
+					{isAuth && (
 						<div className="btn btn-ghost" onClick={() => dispatch(logout())}>
 							Выйти
 						</div>
@@ -44,7 +53,7 @@ function Navbar() {
 						isAuth &&(
 							<div className="avatar">
 								<div className="w-20 rounded-full">
-									<img src="https://placeimg.com/192/192/people" />
+									<img src="https://placeimg.com/192/192/people" alt='' />
 								</div>
 							</div>
 						)

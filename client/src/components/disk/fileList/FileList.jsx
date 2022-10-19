@@ -7,7 +7,7 @@ const FileList = () => {
     const files = useSelector(state => state.file.files)
 
     return (
-        <div className='container p-4 m-auto'>
+        <div className='container'>
             <div className="fileList">
                 <div className="fileList_header">
                 </div>

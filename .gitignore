@@ -7,6 +7,12 @@ logs
 node_modules
 bower_components
 
+client/node_modules
+
+server/node_modules
+
+.idea
+
 *.sublime*
 
 psd

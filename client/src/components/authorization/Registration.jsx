@@ -14,7 +14,9 @@ function Registration() {
 		<div className="hero min-h-screen bg-base-200 bg-authBg">
 			<div className="hero-content flex-col lg:flex-row-reverse">
 				<div className="text-center lg:text-left">
-					<h1 className="text-5xl font-bold">Зарегестрироваться!</h1>
+					<h1 className="text-3xl md:text-4xl lg:text-5xl font-bold">
+						Зарегестрироваться!
+					</h1>
 					<p className="py-6">
 						Пользуйтесь облачным хранилищем с любой точки земли!
 					</p>

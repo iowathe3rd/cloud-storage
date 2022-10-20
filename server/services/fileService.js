@@ -1,5 +1,6 @@
 const fs = require("fs");
 const path = require("path");
+const config = require("config");
 
 class FileService {
 	createDir(file) {
@@ -17,6 +18,18 @@ class FileService {
 				return reject({ message: "File error" });
 			}
 		});
+	}
+	deleteFile(file) {
+		const path = this.getPath(file)
+		console.log(path)
+		if (file.type === 'dir') {
+			fs.rmdirSync(path)
+		} else {
+			fs.unlinkSync(path)
+		}
+	}
+	getPath(file) {
+		return path.join(config.get('filePath'), file.user.toString(), file.path, file.name);
 	}
 }
 

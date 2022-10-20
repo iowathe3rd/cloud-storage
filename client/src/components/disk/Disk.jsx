@@ -4,6 +4,7 @@ import {getFiles, uploadFile} from "../../action/file";
 import FileList from "./fileList/FileList";
 import Popup from "./Popup";
 import {setCurrentDir, setPopupDisplay} from "../../reducers/fileReducer";
+import ActionModal from "./fileList/file/ActionModal";
 
 const Disk = () => {
     const dispatch = useDispatch();
@@ -45,8 +46,6 @@ const Disk = () => {
         event.stopPropagation();
         let files = [...event.dataTransfer.files]
         files.forEach(file => dispatch(uploadFile(file, currentDir)))
-        console.log(files)
-
         setDragEnter(false)
     }
 
@@ -78,6 +77,7 @@ const Disk = () => {
             }
             <FileList/>
             <Popup/>
+            <ActionModal/>
         </div>
     );
 };

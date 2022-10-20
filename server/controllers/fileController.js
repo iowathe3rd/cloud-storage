@@ -54,26 +54,28 @@ class FileController {
 
 			user.usedSpace = user.usedSpace + file.size;
 
-			let filePath;
+			let uploadFilePath;
 			if(parent){
-				filePath = path.join(`${config.get('filePath')}`, `${user._id}`, `${parent.path}`, `${file.name}`);
-				console.log(filePath)
+				uploadFilePath = path.join(`${config.get('filePath')}`, `${user._id}`, `${parent.path}`, `${file.name}`);
 			}else{
-				filePath = path.join(`${config.get('filePath')}`, `${user._id}`, `${file.name}`);
-				console.log(filePath)
+				uploadFilePath = path.join(`${config.get('filePath')}`, `${user._id}`, `${file.name}`);
 			}
-
-			if(fs.existsSync(filePath)){
+			if(fs.existsSync(uploadFilePath)){
 				return res.status(400).json({message: 'File already exist'});
 			}
-			await file.mv(filePath)
+			await file.mv(uploadFilePath)
+			
 
 			const type = file.name.split('.').pop();
+			let filepath = file.name;
+			if(parent){
+				filepath = path.join(parent.path, file.name)
+			}
 			const dbFile = new File({
 				name: file.name,
 				type,
 				size: file.size,
-				path: parent?.path,
+				path: filepath,
 				parent: parent?._id,
 				user: user._id
 			})
@@ -85,6 +87,33 @@ class FileController {
 		}catch (e){
 			console.log(e)
 			return res.status(500).json({message: "Upload error"})
+		}
+	}
+	async downloadFile(req, res){
+		try{
+			const file = await File.findOne({_id: req.query.id, user: req.user.id})
+			const filePath = path.join(config.get('filePath'), req.user.id, file.path, file.name)
+			if(fs.existsSync(filePath)){
+				return res.download(filePath, file.name)
+			}
+			return res.status(400).json({message: "File not found"})
+		}catch (e) {
+			console.log(e);
+			return res.status(500).json({message: 'Download error'})
+		}
+	}
+	async deleteFile(req, res) {
+		try {
+			const file = await File.findOne({_id: req.query.id, user: req.user.id})
+			if (!file) {
+				return res.status(400).json({message: 'file not found'})
+			}
+			fileService.deleteFile(file)
+			await file.remove()
+			return res.json({message: 'File was deleted'})
+		} catch (e) {
+			console.log(e)
+			return res.status(400).json({message: 'Dir is not empty'})
 		}
 	}
 }

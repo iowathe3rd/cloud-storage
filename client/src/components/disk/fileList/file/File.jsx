@@ -3,10 +3,12 @@ import {DocumentIcon, FileIcon} from "../../../../assets/Icons";
 import {useDispatch, useSelector} from "react-redux";
 import {pushToStack, setCurrentDir} from "../../../../reducers/fileReducer";
 import {setActionModalDisplay, setFile} from "../../../../reducers/actionModalReducer";
+import sizeFormat from "../../../../utils/sizeFormat";
 
 const File = ({file}) => {
-    const currentDir = useSelector(state => state.file.currentDir);
     const dispatch = useDispatch()
+
+    const currentDir = useSelector(state => state.file.currentDir);
 
     function openDirHandler(event) {
         if (file.type === 'dir') {
@@ -15,7 +17,6 @@ const File = ({file}) => {
             event.stopPropagation()
         }
     }
-
     function actionModalHandler() {
         dispatch(setActionModalDisplay('modal-open'))
         dispatch(setFile(file))
@@ -39,7 +40,7 @@ const File = ({file}) => {
                 </div>
             </td>
             <td>{file.date.slice(0, 10)}</td>
-            <td>{file.size}</td>
+            <td>{sizeFormat(file.size)}</td>
             <td className="">
                 <button className="btn btn-outline btn-xs" onClick={()=>actionModalHandler()}>...</button>
             </td>

@@ -1,3 +1,55 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+@keyframes showAlert {
+    from{
+        transform: translateY(70px);
+        opacity: 0;
+    }
+    to{
+        opacity: 100;
+    }
+}
+
+@keyframes hideAlert {
+    from{
+        opacity: 100;
+    }
+    to{
+        transform: translateY(50px);
+        opacity: 0;
+    }
+}
+
+.alertWrapper.entering {
+    animation: showAlert 0.3s ease-in-out forwards;
+}
+
+.alertWrapper.entered {
+    opacity: 100;
+}
+
+.alertWrapper.exiting {
+    animation: hideAlert 0.3s ease-in-out forwards;
+}
+
+.alertWrapper.exited {
+    opacity: 0;
+}
+
+.file-enter-active{
+    animation: file-enter 500ms forwards;
+}
+
+@keyframes file-enter {
+    0%{
+        opacity: 0;
+        transform: translateX(-50%);
+    }
+    100%{
+        opacity: 1;
+        transform: translateX(0);
+    }
+}

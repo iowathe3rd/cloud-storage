@@ -6,8 +6,8 @@ import Registration from "./components/authorization/Registration";
 import Login from "./components/authorization/Login";
 import {useDispatch, useSelector} from "react-redux";
 import {auth} from "./action/user";
-import Disk from "./components/disk/Disk";
 import DashBoard from "./pages/DashBoard";
+import Toast from "./utils/Toast";
 
 function App() {
     const isAuth = useSelector((state) => state.user.isAuth);
@@ -15,11 +15,14 @@ function App() {
     const dispatch = useDispatch();
     useEffect(() => {
         dispatch(auth());
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+
     return (
         <BrowserRouter>
             <div className="App" data-theme={theme}>
-                <Navbar/>
+                <Toast/>
+                {!isAuth && <Navbar/>}
                 <div>
                     {!isAuth ? (
                         <Routes>
@@ -41,6 +44,7 @@ function App() {
                     )}
                 </div>
             </div>
+
         </BrowserRouter>
     );
 }

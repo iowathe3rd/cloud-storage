@@ -6,14 +6,14 @@ const SET_FILE = "SET_FILE";
 
 const defaultState = {
     modalDisplay: '',
-    file: {},
+    file: null,
     userAgree: false
 }
 
 export default function actionModalReducer(state = defaultState, action) {
     switch (action.type) {
         case SET_ACTION_MODAL_DISPLAY: return {...state, modalDisplay: action.payload}
-        case CLOSE_ACTION_MODAL: return {...state, modalDisplay: action.payload, fileName: action.payload, fileType: action.payload, fileId: action.payload}
+        case CLOSE_ACTION_MODAL: return {...state, modalDisplay: action.payload, file: null}
         case SET_FILE: return {...state, file: action.payload, userAgree: action.payload.userAgree}
         default:
             return state

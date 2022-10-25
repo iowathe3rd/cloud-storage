@@ -24,7 +24,7 @@ const Popup = () => {
     return (
         <div className={`modal ${popupDisplay}`}>
             <div className="modal-box p-0">
-                <div className="card bg-neutral text-neutral-content">
+                <div className="card bg-base-200">
                     <div className="card-body items-center text-center gap-3">
                         <h2 className="card-title">Введите имя папки</h2>
                         <p>Для отмены нажмите отмена</p>

@@ -5,13 +5,17 @@ import fileReducer from "./fileReducer";
 import userReducer from "./userReducer";
 import themeReducer from "./themeReducer";
 import actionModalReducer from "./actionModalReducer";
+import alertReducer from "./AlertReducer";
+import uploadReducer from "./uploadReducer";
 
 
 const rootReducer = combineReducers({
 	user: userReducer,
 	file: fileReducer,
 	theme: themeReducer,
-	actionModal: actionModalReducer
+	actionModal: actionModalReducer,
+	alert: alertReducer,
+	upload: uploadReducer
 });
 
 export const store = createStore(

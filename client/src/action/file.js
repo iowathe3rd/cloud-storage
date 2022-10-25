@@ -1,15 +1,24 @@
 import axios from 'axios'
-import {addFile, setFiles} from "../reducers/fileReducer";
+import {addFile, deleteFileAction, setFiles} from "../reducers/fileReducer";
+import {addUploadFile, changeUploadFile, showUploader} from "../reducers/uploadReducer";
 
-export function getFiles(dirId) {
+export function getFiles(dirId, sort) {
     return async dispatch => {
         try {
-            const response = await axios.get(`http://localhost:5001/api/files${dirId ? '?parent=' + dirId : ''}`, {
+            let url = 'http://localhost:5001/api/files';
+            if(dirId){
+                url = `http://localhost:5001/api/files?parent=${dirId}`;
+            }else if(sort){
+                url = `http://localhost:5001/api/files?sort=${sort}`;
+            }else if(dirId && sort){
+                url = `http://localhost:5001/api/files?parent=${dirId}&sort=${sort}`;
+            }
+            const response = await axios.get(url, {
                 headers: {Authorization: `Bearer ${localStorage.getItem('token')}`}
             })
             dispatch(setFiles(response.data))
         } catch (e) {
-            alert(e.response.data.message)
+            // toggleAlert({display: true, status: 'error', message: `Ошибка! ${e.response.data.message}`})
         }
     }
 }
@@ -25,8 +34,10 @@ export function createDir(dirId, name) {
                 headers: {Authorization: `Bearer ${localStorage.getItem('token')}`}
             })
             dispatch(addFile(response.data))
+            // toggleAlert({display: true, status: 'success', message: `Создана папка ${name}`})
         } catch (e) {
-            alert(e.response.data.message)
+            console.log(e)
+            // toggleAlert({display: true, status: 'error', message: `Файл или папка уже существуют`})
         }
     }
 }
@@ -39,20 +50,31 @@ export function uploadFile(file, dirId) {
             if (dirId) {
                 formData.append('parent', dirId)
             }
+            const uploadFile = {
+                name: file.name,
+                progress: 0,
+                id: Date.now()
+            }
+            dispatch(showUploader())
+            dispatch(addUploadFile(uploadFile))
             const response = await axios.post(`http://localhost:5001/api/files/upload`, formData, {
-                headers: {Authorization: `Bearer ${localStorage.getItem('token')}`},
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`
+                },
                 onUploadProgress: progressEvent => {
                     const totalLength = progressEvent.total;
                     console.log('total', totalLength)
                     if (totalLength) {
-                        let progress = Math.round((progressEvent.loaded * 100) / totalLength)
-                        console.log(progress)
+                         uploadFile.progress = Math.round((progressEvent.loaded * 100) / totalLength)
+                        dispatch(changeUploadFile(uploadFile))
                     }
                 }
             });
             dispatch(addFile(response.data))
+            // toggleAlert({display: true, status: 'success', message: 'Файл загружен'})
         } catch (e) {
-            alert(e.response.data.message)
+            console.log(e)
+            // toggleAlert({display: true, status: 'error', message: `Ошибка! ${e.response.data.message}`})
         }
     }
 }
@@ -65,7 +87,8 @@ export async function downloadFile(file){
     } )
     if(response.status === 200){
         const blob = await response.blob();
-        const downloadUrl = window.URL.createObjectURL(blob);
+        let downloadUrl;
+        downloadUrl = window.URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = downloadUrl;
         link.download = file.name;
@@ -78,15 +101,16 @@ export async function downloadFile(file){
 export function deleteFile(file) {
     return async dispatch => {
         try {
-            await axios.delete(`http://localhost:5001/api/files?id=${file._id}`, {
+            await axios.delete(`http://localhost:5001/api/files/?id=${file._id}`, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem('token')}`
                 }
             })
-            dispatch(deleteFile(file._id))
-            alert("file deleted")
+            await dispatch(deleteFileAction(file._id))
+            // toggleAlert({display: true, status: 'success', message: `Удалене папка ${file.name}`})
         } catch (e) {
-            alert(e.response.data.message)
+            console.log(e)
+            // toggleAlert({display: true, status: 'error', message: `Ошибка! ${e}`})
         }
     }
 }

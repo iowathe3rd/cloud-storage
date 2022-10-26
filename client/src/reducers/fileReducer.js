@@ -7,6 +7,7 @@ const POP_FROM_STACK = 'POP_FROM_STACK';
 const SET_FILE_NAME = 'SET_FILE_NAME';
 const DELETE_FILE = 'DELETE_FILE';
 const SHOW_ERROR_MODAL = 'SHOW_ERROR_MODAL';
+const SET_VIEW = 'SET_VIEW';
 
 const defaultState = {
     files: [],
@@ -15,7 +16,8 @@ const defaultState = {
     errorModal: '',
     error: null,
     dirStack: [],
-    fileName: ''
+    fileName: '',
+    view: 'table'
 }
 
 export default function fileReducer(state = defaultState, action) {
@@ -29,6 +31,7 @@ export default function fileReducer(state = defaultState, action) {
         case SET_FILE_NAME: return {...state, fileName: [...state.fileName, action.payload]}
         case DELETE_FILE: return {...state, files: [...state.files.filter(file => file._id !== action.payload)]}
         case SHOW_ERROR_MODAL: return {...state, errorModal: action.payload.display, error: action.payload.error}
+        case SET_VIEW: return {...state, view: action.payload}
         default:
             return state
     }
@@ -42,3 +45,4 @@ export const setFileName= (name) => ({type: SET_FILE_NAME, payload: name})
 export const pushToStack= (dir) => ({type: PUSH_TO_STACK, payload: dir})
 export const showErrorModal= (modalData) => ({type: SHOW_ERROR_MODAL, payload: modalData})
 export const deleteFileAction= (dirId) => ({type: DELETE_FILE, payload: dirId})
+export const setFileView= (payload) => ({type: SET_VIEW, payload})

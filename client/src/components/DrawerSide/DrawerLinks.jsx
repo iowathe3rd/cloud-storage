@@ -1,7 +1,5 @@
 import React from 'react';
 import Logo from "../../assets/logo.png";
-import {setTheme} from "../../reducers/themeReducer";
-import {useDispatch} from "react-redux";
 
 const DrawerLinks = () => {
     return (

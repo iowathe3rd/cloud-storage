@@ -1,11 +1,10 @@
 import React from 'react';
 import {logout} from "../../reducers/userReducer";
-import {useDispatch, useSelector} from "react-redux";
+import {useDispatch} from "react-redux";
 import {setTheme} from "../../reducers/themeReducer";
 
 const DrawerBottom = () => {
     const dispatch = useDispatch();
-    const theme = useSelector(state=> state.theme.theme)
     return (
         <div className="w-full px-4">
             <div className="">

@@ -7,6 +7,7 @@ import themeReducer from "./themeReducer";
 import actionModalReducer from "./actionModalReducer";
 import alertReducer from "./AlertReducer";
 import uploadReducer from "./uploadReducer";
+import appReducer from "./appReducer";
 
 
 const rootReducer = combineReducers({
@@ -15,7 +16,8 @@ const rootReducer = combineReducers({
 	theme: themeReducer,
 	actionModal: actionModalReducer,
 	alert: alertReducer,
-	upload: uploadReducer
+	upload: uploadReducer,
+	app: appReducer
 });
 
 export const store = createStore(

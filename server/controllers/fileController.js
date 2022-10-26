@@ -96,7 +96,7 @@ class FileController {
     async downloadFile(req, res) {
         try {
             const file = await File.findOne({_id: req.query.id, user: req.user.id})
-            const filePath = pathModule.join(config.get('filePath'), req.user.id, file.path, file.name)
+            const filePath = fileService.getPath(file)
             if (fs.existsSync(filePath)) {
                 return res.download(filePath, file.name)
             }
@@ -111,7 +111,6 @@ class FileController {
         try {
             console.log(req.query, req.user)
             const file = await File.findOne({_id: req.query.id, user: req.user.id})
-            console.log("Файл контроллер" + file)
             if (!file) {
                 return res.status(400).json({message: 'File not found'});
             }
@@ -122,6 +121,17 @@ class FileController {
         } catch (e) {
             console.log(e);
             return res.status(400).json({message: 'Dir is not empty'});
+        }
+    }
+    async searchFile(req, res) {
+        try {
+            const searchName = req.query.search
+            let files = await File.find({user: req.user.id})
+            files = files.filter(file => file.name.includes(searchName))
+            return res.json(files)
+        } catch (e) {
+            console.log(e)
+            return res.status(400).json({message: 'Search error'})
         }
     }
 }

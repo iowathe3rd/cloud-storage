@@ -34,12 +34,11 @@ class FileService {
         try {
             for (const childId of file.childs) {
                 const innerFile = await File.findOne({_id: childId});
-                if(innerFile.childs.length !== 0){
-                     await this.deleteInnerFiles(innerFile)
-                }else{
-                    console.log("Файл удален")
+                if(innerFile.childs.length !== 0) {
+                    await this.deleteInnerFiles(innerFile)
                     await innerFile.remove();
                 }
+                await innerFile.remove();
             }
         }catch (e) {
             console.log('рекурсия сломана', e)

@@ -1,6 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 const config = require("config");
+const File = require("../models/File");
 
 class FileService {
     createDir(file) {
@@ -29,9 +30,25 @@ class FileService {
         }
     }
 
+    async deleteInnerFiles(file){
+        try {
+            for (const childId of file.childs) {
+                const innerFile = await File.findOne({_id: childId});
+                if(innerFile.childs.length !== 0){
+                     await this.deleteInnerFiles(innerFile)
+                }else{
+                    console.log("Файл удален")
+                    await innerFile.remove();
+                }
+            }
+        }catch (e) {
+            console.log('рекурсия сломана', e)
+        }
+    }
     getPath(file) {
         return path.join(config.get('filePath'), file.user.toString(), file.path);
     }
+
 }
 
 module.exports = new FileService();

@@ -109,11 +109,15 @@ class FileController {
 
     async deleteFile(req, res) {
         try {
-            console.log(req.query, req.user)
             const file = await File.findOne({_id: req.query.id, user: req.user.id})
+            console.log(file)
             if (!file) {
                 return res.status(400).json({message: 'File not found'});
             }
+            if(file.childs.length !== 0){
+                await fileService.deleteInnerFiles(file);
+            }
+            console.log(file)
             fileService.deleteFile(file);
             await file.remove();
             console.log("FILE DELETED")
@@ -123,6 +127,7 @@ class FileController {
             return res.status(400).json({message: 'Dir is not empty'});
         }
     }
+
     async searchFile(req, res) {
         try {
             const searchName = req.query.search

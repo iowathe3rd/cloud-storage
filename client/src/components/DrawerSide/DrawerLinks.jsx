@@ -1,10 +1,11 @@
 import React from 'react';
 import Logo from "../../assets/logo.png";
+import {NavLink} from "react-router-dom";
 
 const DrawerLinks = () => {
     return (
         <div>
-            <ul className="menu overflow-y-auto w-full">
+            <ul className="menu overflow-y-auto p-4 w-full">
                 <li>
                     <div className="flex items-center">
                         <a href="/">
@@ -13,10 +14,7 @@ const DrawerLinks = () => {
                         Cloud storage
                     </div>
                 </li>
-                <li><button>Хранилище</button></li>
-
-
-                <li><button></button></li>
+                <li><NavLink to="/disk">Хранилище</NavLink></li>
             </ul>
         </div>
     );

@@ -1,10 +1,16 @@
 import React from 'react';
 import {logout} from "../../reducers/userReducer";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {setTheme} from "../../reducers/themeReducer";
+import defaultAvatar from "../../assets/defaultAvatar.svg";
+import {API_URL} from "../../config";
+import {NavLink} from "react-router-dom";
 
 const DrawerBottom = () => {
     const dispatch = useDispatch();
+    const currentUser = useSelector(state=> state.user.currentUser)
+    const avatar = currentUser.avatar ? `${API_URL + currentUser.avatar}` : defaultAvatar
+
     return (
         <div className="w-full px-4">
             <div className="">
@@ -27,17 +33,19 @@ const DrawerBottom = () => {
                 </label>
             </div>
             <div className="divider"></div>
-            <div className="flex items-center gap-4 h-16">
-                <div className="avatar">
-                    <div className="w-10 rounded-full ring ring-neutral ring-offset-base-100 ring-offset-2">
-                        <img alt={'iowathe3rd'} src="https://placeimg.com/192/192/people" />
+            <NavLink to={'profile'}>
+                <div className="flex items-center gap-4 h-16">
+                    <div className="avatar">
+                        <div className="w-10 rounded-full ring ring-neutral ring-offset-base-100 ring-offset-2">
+                            <img alt={'iowathe3rd'} src={avatar} />
+                        </div>
+                    </div>
+                    <div className="flex flex-col h-full justify-evenly">
+                        <span className="font-light">Бауржан Беглеров</span>
+                        <span className="font-extralight text-sm">Student</span>
                     </div>
                 </div>
-                <div className="flex flex-col h-full justify-evenly">
-                    <span className="font-light">Бауржан Беглеров</span>
-                    <span className="font-extralight text-sm">Student</span>
-                </div>
-            </div>
+            </NavLink>
             <div className="btn btn-ghost btn-block justify-start px-4" onClick={() => dispatch(logout())}>
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />

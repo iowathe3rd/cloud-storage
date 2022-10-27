@@ -1,11 +1,10 @@
 const fs = require("fs");
 const path = require("path");
-const config = require("config");
 const File = require("../models/File");
 
 class FileService {
-    createDir(file) {
-        const filePath = path.join(config.get('filePath'), `${file.user}`, `${file.path}`);
+    createDir(req, file) {
+        const filePath = this.getPath(req, file);
         return new Promise((resolve, reject) => {
             try {
                 if (!fs.existsSync(filePath)) {
@@ -21,15 +20,15 @@ class FileService {
         });
     }
 
-    deleteFile(file) {
-        let filePath = this.getPath(file)
+    deleteFile(req, file) {
+        let filePath = this.getPath(req, file)
         if (file.type === 'dir') {
             fs.rmSync(filePath, {recursive: true});
         } else {
             fs.unlinkSync(filePath)
         }
     }
-
+    //backend func in service file... i know)
     async deleteInnerFiles(file){
         try {
             for (const childId of file.childs) {
@@ -44,8 +43,8 @@ class FileService {
             console.log('рекурсия сломана', e)
         }
     }
-    getPath(file) {
-        return path.join(config.get('filePath'), file.user.toString(), file.path);
+    getPath(req, file) {
+        return path.join(req.filePath, file.user.toString(), file.path);
     }
 
 }

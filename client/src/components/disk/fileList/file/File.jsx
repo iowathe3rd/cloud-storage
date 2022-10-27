@@ -17,9 +17,10 @@ const File = ({file}) => {
         }
     }
 
-    function actionModalHandler() {
-        dispatch(setActionModalDisplay('modal-open'))
-        dispatch(setFile(file))
+    function actionModalHandler(event) {
+        dispatch(setActionModalDisplay('modal-open'));
+        dispatch(setFile(file));
+        event.stopPropagation();
     }
 
     const fileView = useSelector(state => state.file.view)
@@ -51,17 +52,17 @@ const File = ({file}) => {
         );
     } else if (fileView === 'plate') {
         return (
-            <div className="card w-full bg-base-200 h-56">
-                <button className="btn btn-ghost btn-circle btn-sm top-2 right-2 absolute " onClick={() => actionModalHandler()}>
+            <div className="card w-full bg-base-200 h-56" onClick={openDirHandler}>
+                <button className="btn btn-ghost btn-circle btn-sm top-2 right-2 absolute " onClick={(event) => actionModalHandler(event)}>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5}
                          stroke="currentColor" className="w-6 h-6">
                         <path strokeLinecap="round" strokeLinejoin="round"
                               d="M6.75 12a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM12.75 12a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM18.75 12a.75.75 0 11-1.5 0 .75.75 0 011.5 0z"/>
                     </svg>
                 </button>
-                <div className="card-body p-4 items-center text-center flex flex-col justify-between">
+                <div className="card-body p-4 text-center overflow-hidden items-center flex flex-col justify-between">
                     <div className="w-32 h-32">{getIcon(file.type, 20)}</div>
-                    <span>{file.name}</span>
+                    <span className="truncate w-full">{file.name}</span>
                 </div>
             </div>
         )

@@ -4,6 +4,7 @@ const File = require("../models/File");
 const config = require('config');
 const pathModule = require('path');
 const fs = require('fs');
+const Uuid = require('uuid');
 
 class FileController {
     async createDir(req, res) {
@@ -16,7 +17,7 @@ class FileController {
                 await fileService.createDir(file);
             } else {
                 file.path = pathModule.join(`${parentFile.path}`, `${file.name}`);
-                await fileService.createDir(file);
+                await fileService.createDir(req, file);
                 parentFile.childs.push(file._id);
                 await parentFile.save();
             }
@@ -59,15 +60,15 @@ class FileController {
 
             let path;
             if (parent) {
-                path = pathModule.join(config.get('filePath'), user._id.toString(), parent.path, file.name)
+                path = pathModule.join(req.filePath, user._id.toString(), parent.path, file.name)
             } else {
-                path = pathModule.join(config.get('filePath'), user._id.toString(), file.name);
+                path = pathModule.join(req.filePath, user._id.toString(), file.name);
             }
 
             if (fs.existsSync(path)) {
                 return res.status(400).json({message: 'File already exist'})
             }
-            file.mv(path)
+            await file.mv(path)
 
             const type = file.name.split('.').pop()
             let filePath = file.name
@@ -79,7 +80,7 @@ class FileController {
                 type,
                 size: file.size,
                 path: filePath,
-                parent: parent?._id,
+                parent: parent ? parent._id : null,
                 user: user._id
             });
 
@@ -96,7 +97,7 @@ class FileController {
     async downloadFile(req, res) {
         try {
             const file = await File.findOne({_id: req.query.id, user: req.user.id})
-            const filePath = fileService.getPath(file)
+            const filePath = fileService.getPath(req, file)
             if (fs.existsSync(filePath)) {
                 return res.download(filePath, file.name)
             }
@@ -116,7 +117,7 @@ class FileController {
             if(file.childs.length !== 0){
                 await fileService.deleteInnerFiles(file);
             }
-            fileService.deleteFile(file);
+            fileService.deleteFile(req, file);
             await file.remove();
             return res.json({message: 'File was deleted'});
         } catch (e) {
@@ -134,6 +135,36 @@ class FileController {
         } catch (e) {
             console.log(e)
             return res.status(400).json({message: 'Search error'})
+        }
+    }
+    async uploadAvatar(req, res){
+        try{
+            const file = req.files.file;
+            console.log(file);
+            const avatarType = file.name.split('.').pop()
+            console.log(avatarType)
+            const user = await User.findById(req.user.id);
+            console.log(user)
+            const avatarName = Uuid.v4() + '.' + avatarType;
+            await file.mv(pathModule.join(config.get('staticPath'), avatarName))
+            user.avatar = avatarName;
+            await user.save();
+            return res.status(200).json(user);
+        }catch (e) {
+            console.log(e)
+            return res.status(500).json({message: 'При загрузке аватара что то пошло не так'})
+        }
+    }
+    async deleteAvatart(req, res){
+        try{
+            const user = await User.findById(req.user.id);
+            fs.unlinkSync(pathModule.join(config.get('staticPath'), user.avatar));
+            user.avatar = null;
+            await user.save();
+            return res.status(200).json(user);
+        }catch (e) {
+            console.log(e)
+            return res.status(500).json({message: 'Delete avatar error'})
         }
     }
 }

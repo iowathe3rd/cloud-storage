@@ -2,5 +2,6 @@
     "serverPort": 5001,
     "dbUrl": "mongodb+srv://iowathe3rd:Tilt100500@cloud-disk.gkogjd5.mongodb.net/?retryWrites=true&w=majority",
     "secretKey": "super-sercret-key",
-    "filePath": "/Users/baurzanbeglerov/Desktop/cloud-storage/server/files/"
+    "filePath": "/Users/baurzanbeglerov/Desktop/cloud-storage/server/files/",
+    "staticPath": "/Users/baurzanbeglerov/Desktop/cloud-storage/server/static/"
 }
